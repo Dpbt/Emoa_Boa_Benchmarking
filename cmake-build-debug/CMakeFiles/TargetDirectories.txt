@@ -1,0 +1,5 @@
+C:/Users/denis/CLionProjects/emoa_git/cmake-build-debug/CMakeFiles/emoa.dir
+C:/Users/denis/CLionProjects/emoa_git/cmake-build-debug/CMakeFiles/run_emoa.dir
+C:/Users/denis/CLionProjects/emoa_git/cmake-build-debug/CMakeFiles/test_emoa.dir
+C:/Users/denis/CLionProjects/emoa_git/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/denis/CLionProjects/emoa_git/cmake-build-debug/CMakeFiles/rebuild_cache.dir
