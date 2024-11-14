@@ -2,8 +2,8 @@ EMOAResults:
 n_generated: 588
 n_expanded: 404
 n_domCheck: 0
-rt_initHeu: 1.585
-rt_search: 0
+rt_initHeu: 1.338
+rt_search: 0.015
 timeout: 0
 num_nondom_labels_max: -1
 num_nondom_labels_avg: -1
