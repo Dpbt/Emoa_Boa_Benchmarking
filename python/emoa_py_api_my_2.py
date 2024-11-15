@@ -168,7 +168,7 @@ if __name__ == "__main__":
     # out, stdout = runEMOA(["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr"],
     #         "../data/",
     #         "../cmake-build-debug/run_emoa.exe",
-    #         "../data/NY-result_2.txt",
+    #         "../data/NY-result.txt",
     #         1, 100, 600)
     #
     # print(out)
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
     pd.set_option('display.max_columns', None)
 
-    tests = [["NY", 600, 1, 100, "../data/NY-result_2.txt", ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr"]]]
+    tests = [["NY", 600, 1, 100, "../data/NY-result.txt", ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr"]]]
 
     test_results = test_emoa(tests)
 
