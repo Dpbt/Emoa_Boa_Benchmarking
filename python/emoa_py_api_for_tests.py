@@ -8,6 +8,9 @@ import numpy as np
 import sys
 import subprocess
 import pandas as pd
+from IPython.display import Image as Img, display
+from ipywidgets import IntProgress
+from tqdm import tqdm
 
 
 def getResult(res_file):
@@ -58,7 +61,7 @@ def getResult(res_file):
 def runEMOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
     """
     """
-    print("[INFO] runEMOA (python) vo =", vo, ", vd =", vd, ", tlimit =", tlimit, ", M =", len(cg_list) )
+    # print("[INFO] runEMOA (python) vo =", vo, ", vd =", vd, ", tlimit =", tlimit, ", M =", len(cg_list))
 
     cmd = [exe_path, str(vo), str(vd), str(tlimit), str(len(cg_list))] + cg_list
     cmd.append(res_path)
@@ -69,21 +72,30 @@ def runEMOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
     #        "-c",
     #        "cd /c/Users/denis/CLionProjects/public_emoa_git/cmake-build-debug && ./run_emoa.exe " + cmd_s]
 
+    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
+    #        "-c",
+    #        "../cmake-build-debug/run_emoa.exe " + cmd_s]
+
     cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
            "-c",
-           "../cmake-build-debug/run_emoa.exe " + cmd_s]
+           "C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/run_emoa.exe " + cmd_s]
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 
     process.wait()
-    print("[INFO] runEMOA (python) invoke c++ bin finished..." )
+    # print("[INFO] runEMOA (python) invoke c++ bin finished..." )
 
     out = getResult(res_path)
 
     return out
 
+def runBOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
+    """
+    """
+    pass
 
-def test_emoa(tests: list):
+
+def test_emoa(tests: list, display_progress: bool = False):
     exp_num = 0
     test_results = pd.DataFrame(columns=['map_name', 'num_dims', 'time_limit',
                                          'start', 'goal', 'n_generated', 'n_expanded',
@@ -91,18 +103,28 @@ def test_emoa(tests: list):
                                          'num_nondom_labels_avg', 'num_solutions',
                                          'solutions_labels'])
 
-    for test in tests:
+    if display_progress:
+        iterator = tqdm(tests, desc="Выполнение тестов")
+    else:
+        iterator = tests
+
+    for test in iterator:
         exp_num += 1
 
-        map_name, time_limit, start, goal, result_file, maps = test
+        algorithm, map_name, time_limit, start, goal, result_file, maps = test
 
-        out = runEMOA(cg_list=maps,
-                      data_folder="../data/",
-                      exe_path="../cmake-build-debug/run_emoa.exe",
-                      res_path=result_file,
-                      vo=start,
-                      vd=goal,
-                      tlimit=time_limit)
+        if algorithm == "emoa":
+            out = runEMOA(cg_list=maps,
+                          data_folder="../data/",
+                          exe_path="../cmake-build-debug/run_emoa.exe",
+                          res_path=result_file,
+                          vo=start,
+                          vd=goal,
+                          tlimit=time_limit)
+        elif algorithm == "boa":
+            pass
+        else:
+            print("Error: no such algorithm")
 
         new_row = {'map_name': map_name,
                    'num_dims': len(maps),
@@ -125,28 +147,28 @@ def test_emoa(tests: list):
 
 
 if __name__ == "__main__":
-
-    # grs = ["../data/ex1-c1.gr", "../data/ex1-c2.gr", "../data/ex1-c3.gr"]
-
-    # runEMOA(["../data/ex1-c1.gr", "../data/ex1-c2.gr", "../data/ex1-c3.gr"],
-    #         "../data/",
-    #         "../cmake-build-debug/run_emoa.exe",
-    #         "../data/temp-res.txt",
-    #         1, 5, 60)
-
-    # out, stdout = runEMOA(["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr"],
-    #         "../data/",
-    #         "../cmake-build-debug/run_emoa.exe",
-    #         "../data/NY-result.txt",
-    #         1, 100, 600)
-
     pd.set_option('display.max_columns', None)
 
-    tests = [["NY", 600, 1, 10000, "../data/NY-result.txt", ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
+    tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+             ["emoa", "NY", 600, 2, 6000, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+             ["emoa", "NY", 600, 1, 3000, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+             ["emoa", "NY", 600, 100, 6500, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+             ["emoa", "NY", 600, 4, 5500, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],]
 
-    test_results = test_emoa(tests)
+    # tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
+    #
+    # tests = [["emoa", "NY", 600, 1, 500, "C:/Users/denis/PycharmProjects/Emoa_heu_tests/data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
 
-    test_results.to_csv('../data/NY_test_results.csv', index=False)
+    test_results = test_emoa(tests, display_progress=False)
+
+    test_results.to_csv('../data_out/NY_test_results.csv', index=False)
 
     print(test_results)
 
