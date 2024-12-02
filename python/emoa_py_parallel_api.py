@@ -94,12 +94,36 @@ def runEMOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
 def runBOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
     """
     """
-    pass
+    cmd = [exe_path, str(vo), str(vd), str(tlimit), str(len(cg_list))] + cg_list
+    cmd.append(res_path)
+
+    cmd_s = ' '.join(cmd[1:])
+
+    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
+    #        "-c",
+    #        "cd /c/Users/denis/CLionProjects/public_emoa_git/cmake-build-debug && ./run_emoa.exe " + cmd_s]
+
+    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
+    #        "-c",
+    #        "../cmake-build-debug/run_emoa.exe " + cmd_s]
+
+    cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
+           "-c",
+           "C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/run_boa.exe " + cmd_s]
+
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+
+    process.wait()
+    # print("[INFO] runEMOA (python) invoke c++ bin finished..." )
+
+    out = getResult(res_path)
+
+    return out
 
 
 def test_emoa(tests: list, display_progress: bool = False):
     exp_num = 0
-    test_results = pd.DataFrame(columns=['map_name', 'num_dims', 'time_limit',
+    test_results = pd.DataFrame(columns=['algorithm', 'map_name', 'num_dims', 'time_limit',
                                          'start', 'goal', 'n_generated', 'n_expanded',
                                          'heuristic_time', 'search_time', 'timeout', 'num_nondom_labels_max',
                                          'num_nondom_labels_avg', 'num_solutions',
@@ -124,11 +148,18 @@ def test_emoa(tests: list, display_progress: bool = False):
                           vd=goal,
                           tlimit=time_limit)
         elif algorithm == "boa":
-            pass
+            out = runBOA(cg_list=maps,
+                          data_folder="../data/",
+                          exe_path="../cmake-build-debug/run_boa.exe",
+                          res_path=result_file,
+                          vo=start,
+                          vd=goal,
+                          tlimit=time_limit)
         else:
             print("Error: no such algorithm")
 
-        new_row = {'map_name': map_name,
+        new_row = {'algorithm': algorithm,
+                   'map_name': map_name,
                    'num_dims': len(maps),
                    'time_limit': time_limit,
                    'start': start,
@@ -175,6 +206,11 @@ if __name__ == "__main__":
                ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
              ["emoa", "NY", 600, 4, 5500, "../data_out/NY-result.txt",
                ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],]
+
+    tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+             ["boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
 
     start_time = time.time()
 

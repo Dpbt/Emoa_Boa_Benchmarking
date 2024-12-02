@@ -5,7 +5,7 @@
  *******************************************/
 
 #include "graph_io.hpp"
-#include "search_boalex.hpp"
+#include "search_boa.hpp"
 #include "debug.hpp"
 #include <iostream>
 #include <string>

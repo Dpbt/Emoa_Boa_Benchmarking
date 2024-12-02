@@ -1,9 +1,9 @@
-EMOAResults: 
+BOAResults: 
 n_generated: 47590
 n_expanded: 41231
 n_domCheck: 0
-rt_initHeu: 3.236
-rt_search: 0.905
+rt_initHeu: 2.407
+rt_search: 14.751
 timeout: 0
 num_nondom_labels_max: -1
 num_nondom_labels_avg: -1
