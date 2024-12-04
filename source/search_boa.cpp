@@ -358,23 +358,58 @@ basic::AVLNode* Frontier::_rebuildTreeMethod(std::vector<long> &tree_node_ids, l
    return false;
    };
 
-  void Frontier_BOA::Update(Label l){
-         std::vector<long> tbd;
-        for (auto k : labels){
-        auto lk = k.second;
-        if (EpsDom(l.g, lk.g)) {
-         tbd.push_back(lk.id);
-       }
-     }
-      for (auto k: tbd){
-      labels.erase(k);
+// переписать update 
+/*
+void Frontier_BOA::Update(Label l){
+  std::vector<long> tbd;
+  for (auto k : labels){
+    auto lk = k.second;
+      if (EpsDom(l.g, lk.g)) {
+        tbd.push_back(lk.id);
       }
+    }
+    for (auto k: tbd){
+      labels.erase(k);
+    }
    labels[l.id] = l;
    label_ids.push_back(l.id);
    return;
- };
-
-
+ };*/
+//upd: переписал, 1 правка
+void Frontier_BOA::Update(Label l) {
+  auto it = labels.begin();
+  while (it != labels.end()) { 
+    auto lk = it->second; 
+    
+    if (EpsDom(l.g, lk.g)) {
+      // 'l' dominates 'lk' - Delete 'lk' directly
+      it = labels.erase(it); 
+    } else if (EpsDom(lk.g, l.g)) {
+      // 'lk' dominates 'l' - Do not add 'l'
+      return;
+    } else {
+      ++it; // Move to the next label
+    }
+  }
+  
+  // Find the correct insertion point for the new label
+  auto insertIt = labels.end();
+  for (auto it = labels.begin(); it != labels.end(); ++it) {
+    auto lk = it->second; 
+    if (LexCompare(lk.g, l.g) < 0) {
+      insertIt = it;
+      break;
+    }
+  }
+  
+  // Add the new label 'l'
+  if (insertIt == labels.end()) {
+    labels[l.id] = l;
+  } else {
+    labels.insert(insertIt, {l.id, l});
+  }
+  label_ids.push_back(l.id);
+}
 
 /*void Frontier::_verifyNonDom(std::vector<long>& tree_node_ids){
   for (size_t i = 0; i < tree_node_ids.size(); i++) {
