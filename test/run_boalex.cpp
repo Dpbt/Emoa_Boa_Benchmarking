@@ -77,15 +77,15 @@ int main( int argc, char *argv[] ) {
   // ####### Test 2 - run planner ######### //
   // ######################################### //
 
-  rzq::search::BOAResult res;
-  rzq::search::RunBOA(&g, vo, vd, time_limit, &res);
+  rzq::search::BOALEXResult res;
+  rzq::search::RunBOALEX(&g, vo, vd, time_limit, &res);
 
-  rzq::search::SaveBOAResult(result_fname, res);
+  rzq::search::SaveBOALEXResult(result_fname, res);
 
   return 1;
 };
 
 void print_help_message () {
   std::cout << "[INFO] This program should be called as follows using a command line terminal." << std::endl;
-  std::cout << "    ./run_boa (arg1 v_start) (arg2 v_dest) (arg3 time_limit) (arg4 M) (arg5 graph1_path) (arg6 graph2_path) ... ((arg(M+4) graphM_path)) (arg(M+5) result_path)" << std::endl;
+  std::cout << "    ./run_boalex (arg1 v_start) (arg2 v_dest) (arg3 time_limit) (arg4 M) (arg5 graph1_path) (arg6 graph2_path) ... ((arg(M+4) graphM_path)) (arg(M+5) result_path)" << std::endl;
 }
