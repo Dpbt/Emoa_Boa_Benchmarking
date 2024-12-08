@@ -5,8 +5,8 @@
  *******************************************/
 
 
-#ifndef ZHONGQIANGREN_BASIC_SEARCH_BOA_H_
-#define ZHONGQIANGREN_BASIC_SEARCH_BOA_H_
+#ifndef ZHONGQIANGREN_BASIC_SEARCH_BOALEX_H_
+#define ZHONGQIANGREN_BASIC_SEARCH_BOALEX_H_
 
 #include "search.hpp"
 #include "search_dijkstra.hpp"
@@ -16,7 +16,7 @@
 #include <unordered_set>
 #include <set>
 
-#define DEBUG_BOA 0
+#define DEBUG_BOALEX 0
 
 namespace rzq{
 namespace search{
@@ -43,7 +43,7 @@ std::ostream& operator<<(std::ostream& os, Label& l) ;
 /**
  * @brief result data structure.
  */
-struct BOAResult {
+struct BOALEXResult {
   std::unordered_map< long, std::vector<long> > paths;
   std::unordered_map< long, CostVec > costs;
   long n_generated = 0;
@@ -59,10 +59,10 @@ struct BOAResult {
 /**
  * @brief an interface, depends on the impl of BOA*, TOA*, etc.
  */
-class Frontier_BOA : public CostVec {
+class Frontier_BOALEX : public CostVec {
 public:
-  Frontier_BOA();
-  virtual ~Frontier_BOA();
+  Frontier_BOALEX();
+  virtual ~Frontier_BOALEX();
   virtual bool Check(CostVec g) ; // check if l is dominated or not.
   virtual void Update(Label l) ; // update the frontier using l.
   std::vector<long> label_ids;
@@ -91,10 +91,10 @@ protected:
 /**
  * @brief an interface / base class, use its pointer
  */
-class BOA {
+class BOALEX {
 public:
-  BOA() ;
-  virtual ~BOA() ;
+  BOALEX();
+  virtual ~BOALEX();
   // virtual void SetMode(const std::string in) ;
 
   // set graph as pointer, note to leverage polymorphism here.
@@ -106,7 +106,7 @@ public:
   // heuristic computation are included in each search call.
   virtual int Search(long vo, long vd, double time_limit) ;
 
-  virtual BOAResult GetResult() const ;
+  virtual BOALEXResult GetResult() const ;
 
   /**
    * @brief a new API for python wrapper. only for grid like world. 
@@ -136,7 +136,7 @@ protected:
 
   // std::unordered_map< long, Frontier > _alpha; // map a vertex id (v) to alpha(v).
   //std::vector< Frontier > _alpha; // map a vertex id (v) to alpha(v).
-  std::vector< Frontier_BOA* > _alpha; // map a vertex id (v) to alpha(v).
+  std::vector< Frontier_BOALEX* > _alpha; // map a vertex id (v) to alpha(v).
   //std::vector< FrontierNaive> _alpha;
 
   long _label_id_gen = 0;
@@ -153,7 +153,7 @@ protected:
   size_t __vec_alloc_batch = 1024;
   size_t __vec_alloc_batch_max = 1024*4;
 
-  BOAResult _res;
+  BOALEXResult _res;
   std::vector<Dijkstra> _dijks;
   // std::string _mode = ""; // for some special usage
 
@@ -176,12 +176,12 @@ void GraphExpandCostDim(rzq::basic::SparseGraph* g, bool add_deg_cost, bool add_
  * time_limit - the run time limit for search.
  * res - the output argument.
  */
-int RunBOA(rzq::basic::PlannerGraph* g, long vo, long vd, double time_limit, rzq::search::BOAResult* res);
+int RunBOALEX(rzq::basic::PlannerGraph* g, long vo, long vd, double time_limit, rzq::search::BOALEXResult* res);
 
 /**
  * @brief Save the BOA* result to a file.
  */
-int SaveBOAResult(std::string fname, const search::BOAResult& res);
+int SaveBOALEXResult(std::string fname, const search::BOALEXResult& res);
 
 
 } // end namespace search
