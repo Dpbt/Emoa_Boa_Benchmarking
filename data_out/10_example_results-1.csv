@@ -1,3 +1,0 @@
-algorithm,map_name,num_dims,time_limit,start,goal,n_generated,n_expanded,heuristic_time,search_time,timeout,num_nondom_labels_max,num_nondom_labels_avg,num_solutions,solutions_labels
-emoa,NY,3,600,1,100,427,330,0.0,0.0,0,-1.0,-1.0,30,"dict_keys([1026, 489, 547, 444, 850, 412, 334, 131, 469, 643, 517, 222, 1005, 356, 793, 675, 927, 965, 611, 699, 579, 815, 271, 743, 57, 765, 159, 985, 867, 899])"
-boa,NY,3,600,1,100,427,330,0.0,0.013,0,-1.0,-1.0,30,"dict_keys([1026, 489, 547, 444, 850, 412, 334, 131, 469, 643, 517, 222, 1005, 356, 793, 675, 927, 965, 611, 699, 579, 815, 271, 743, 57, 765, 159, 985, 867, 899])"
