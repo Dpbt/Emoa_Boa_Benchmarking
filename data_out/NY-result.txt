@@ -1,9 +1,9 @@
-BOAResults: 
+BOALEX_Results: 
 n_generated: 47590
 n_expanded: 41231
 n_domCheck: 0
-rt_initHeu: 2.407
-rt_search: 14.751
+rt_initHeu: 2.328
+rt_search: 2.959
 timeout: 0
 num_nondom_labels_max: -1
 num_nondom_labels_avg: -1

@@ -1,6 +1,8 @@
 C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/emoa.dir
 C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/run_boa.dir
+C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/run_boalex.dir
 C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/run_emoa.dir
+C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/test_boalex.dir
 C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/test_emoa.dir
 C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/edit_cache.dir
 C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/CMakeFiles/rebuild_cache.dir

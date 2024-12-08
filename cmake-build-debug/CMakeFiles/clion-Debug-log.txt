@@ -7,6 +7,6 @@ CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
   CMake that the project does not need compatibility with older versions.
 
 
--- Configuring done (0.2s)
--- Generating done (0.1s)
+-- Configuring done (0.1s)
+-- Generating done (0.2s)
 -- Build files have been written to: C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug

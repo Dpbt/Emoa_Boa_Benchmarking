@@ -109,7 +109,7 @@ def runBOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
 
     cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
            "-c",
-           "C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/run_boa.exe " + cmd_s]
+           "C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/run_boalex.exe " + cmd_s]
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 
@@ -150,7 +150,7 @@ def test_emoa(tests: list, display_progress: bool = False):
         elif algorithm == "boa":
             out = runBOA(cg_list=maps,
                           data_folder="../data/",
-                          exe_path="../cmake-build-debug/run_boa.exe",
+                          exe_path="../cmake-build-debug/run_boalex.exe",
                           res_path=result_file,
                           vo=start,
                           vd=goal,
