@@ -162,14 +162,14 @@ if __name__ == "__main__":
     #          ["emoa", "NY", 600, 4, 5500, "../data_out/NY-result.txt",
     #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],]
     #
-    # tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+    # tests = [[1, "emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
     #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-    #          ["boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+    #          [1, "boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
     #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
 
-    tests = ny_tests_generator(num_tests=20)
+    tests = ny_tests_generator(num_tests=50)
 
-    test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
-    test_results.to_csv('../data_out/NY_test_results_1.csv', index=False)
+    test_results = parallel_run(tests[80:100], batch_size=1, n_jobs=5, display_progress=False)
+    test_results.to_csv('../data_out/NY_test_results_3.csv', index=False)
     print(test_results)
 
