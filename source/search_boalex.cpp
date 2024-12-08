@@ -19,7 +19,7 @@ namespace search{
 
 #define NO_FILTER_FRONTIER false // just for experiment
 
-long G_DOM_CHECK_COUNT_BOA = 0; // global variable, make impl easier...
+long G_DOM_CHECK_COUNT_BOALEX = 0; // global variable, make impl easier...
 
 inline std::ostream& operator<<(std::ostream& os, Label& l){
   std::string s;
@@ -33,9 +33,9 @@ inline std::ostream& operator<<(std::ostream& os, Label& l){
 
 //////////////////////////////////////////////////////////
 
-BOA::BOA() {};
+BOALEX::BOALEX() {};
 
-BOA::~BOA() {
+BOALEX::~BOALEX() {
   // for (auto k :_alpha) { // free all frontier that are newed.
   //   delete k.second; // all destructors are virtual
   // }
@@ -47,11 +47,11 @@ BOA::~BOA() {
   return;
 };
 
-void BOA::SetGraphPtr(basic::PlannerGraph* g) {
+void BOALEX::SetGraphPtr(basic::PlannerGraph* g) {
   _graph = g;
 };
 
-void BOA::InitHeu(long vd) {
+void BOALEX::InitHeu(long vd) {
   SimpleTimer timer;
   timer.Start();
   _dijks.resize(_graph->CostDim());
@@ -61,11 +61,11 @@ void BOA::InitHeu(long vd) {
   }
   _res.rt_initHeu = timer.GetDurationSecond();
 
-  G_DOM_CHECK_COUNT_BOA = 0; // reset dom check counter.
+  G_DOM_CHECK_COUNT_BOALEX = 0; // reset dom check counter.
   return ;
 };
 
-int BOA::Search(long vo, long vd, double time_limit) {
+int BOALEX::Search(long vo, long vd, double time_limit) {
   
   // NOTE: InitHeu(vd) should be called outside
 
@@ -85,7 +85,7 @@ int BOA::Search(long vo, long vd, double time_limit) {
   // _UpdateFrontier(lo);
   _open.insert( std::make_pair(lo.f, lo.id) );
 
-  if (DEBUG_BOA > 0) {
+  if (DEBUG_BOALEX > 0) {
     std::cout << "[DEBUG] Init, lo = " << lo << std::endl;
   }
 
@@ -103,13 +103,13 @@ int BOA::Search(long vo, long vd, double time_limit) {
     Label l = _label[ _open.begin()->second ];
     _open.erase(_open.begin());
 
-    if (DEBUG_BOA > 0) {
+    if (DEBUG_BOALEX > 0) {
       std::cout << "[DEBUG] ### Pop l = " << l << std::endl;
     }
 
     // ## lazy dominance check ##
     if ( _FrontierCheck(l) || _SolutionCheck(l) ) {
-      if (DEBUG_BOA > 1) {
+      if (DEBUG_BOALEX > 1) {
         std::cout << "[DEBUG] F- AND S-check lazy, dom, cont..." << std::endl;
       }
       continue;
@@ -118,7 +118,7 @@ int BOA::Search(long vo, long vd, double time_limit) {
     if (l.v == vd) {
       continue;
     }
-    if (DEBUG_BOA > 1) {
+    if (DEBUG_BOALEX > 1) {
       std::cout << "[DEBUG] ### Exp. " << l << std::endl;
     }
 
@@ -132,16 +132,16 @@ int BOA::Search(long vo, long vd, double time_limit) {
       Label l2(_GenLabelId(), u, gu, gu + _Heuristic(u));
       _label[l2.id] = l2;
       _parent[l2.id] = l.id;
-      if (DEBUG_BOA > 0) {
+      if (DEBUG_BOALEX > 0) {
         std::cout << "[DEBUG] >>>> Loop v= " << u << " gen l' = " << l2 << std::endl;
       }
       if (_FrontierCheck(l2) || _SolutionCheck(l2) ) {
-        if (DEBUG_BOA > 1) {
+        if (DEBUG_BOALEX > 1) {
           std::cout << "[DEBUG] ----- F- AND S-check eager, dom, cont..." << std::endl;
         }
         continue;
       }
-      if (DEBUG_BOA > 0) {
+      if (DEBUG_BOALEX > 0) {
         std::cout << "[DEBUG] ----- Add to open..." << std::endl;
       }
       _res.n_generated++;
@@ -153,7 +153,7 @@ int BOA::Search(long vo, long vd, double time_limit) {
   std::cout << "[INFO] BOA::_PostProcRes..." << std::endl;
   _PostProcRes();
 
-  _res.n_domCheck = G_DOM_CHECK_COUNT_BOA;
+  _res.n_domCheck = G_DOM_CHECK_COUNT_BOALEX;
   _res.rt_search = timer.GetDurationSecond();
 
   std::cout << "[INFO] BOA::Search exit." << std::endl;
@@ -161,7 +161,7 @@ int BOA::Search(long vo, long vd, double time_limit) {
 };
 
 
-CostVec BOA::_Heuristic(long v) {
+CostVec BOALEX::_Heuristic(long v) {
   auto out = CostVec(_graph->CostDim(), 0);
   for (size_t cdim = 0; cdim < out.size(); cdim++) {
     out[cdim] = _dijks[cdim].GetDistValue(v);
@@ -174,11 +174,11 @@ CostVec BOA::_Heuristic(long v) {
   return out;
 };
 
-BOAResult BOA::GetResult() const {
+BOALEXResult BOALEX::GetResult() const {
   return _res;
 };
 
-long BOA::_GenLabelId() {
+long BOALEX::_GenLabelId() {
 
   long out = _label_id_gen++;
 
@@ -194,7 +194,7 @@ long BOA::_GenLabelId() {
   return out;
 };
 
-void BOA::_PostProcRes() {
+void BOALEX::_PostProcRes() {
   // if (_alpha.find(_vd) != _alpha.end()) {
     for (auto lid : _alpha[_vd]->label_ids) {
       _res.paths[lid] = _BuildPath(lid);
@@ -204,13 +204,13 @@ void BOA::_PostProcRes() {
   return ;
 };
 
-bool BOA::_FrontierCheck(Label l) {
+bool BOALEX::_FrontierCheck(Label l) {
   // if (_alpha.find(l.v) == _alpha.end()) {return false;}
   auto res = _alpha[l.v]->Check(l.g);
   return res;
 };
 
-bool BOA::_SolutionCheck(Label l) {
+bool BOALEX::_SolutionCheck(Label l) {
 
   // if (_alpha.find(_vd) == _alpha.end()) {return false;}
   auto temp = _alpha[_vd]->Check(l.f);
@@ -218,7 +218,7 @@ bool BOA::_SolutionCheck(Label l) {
   return temp;
 };
 
-std::vector<long> BOA::_BuildPath(long lid) {
+std::vector<long> BOALEX::_BuildPath(long lid) {
   std::vector<long> out, out2;
   while( lid >= 0 ) {
     out.push_back(_label[lid].v);
@@ -239,15 +239,15 @@ std::vector<long> BOA::_BuildPath(long lid) {
 // };
 
 
-void BOA::_InitFrontiers() {
+void BOALEX::_InitFrontiers() {
   _alpha.resize(_graph->NumVertex()); // this requires the graph vertex are numbered from 0 to |V|.
   for (int idx = 0; idx < _alpha.size(); idx++){
-    _alpha[idx] = new Frontier_BOA;
+    _alpha[idx] = new Frontier_BOALEX;
   }
   return;
 };
 
-void BOA::_UpdateFrontier(Label l) {
+void BOALEX::_UpdateFrontier(Label l) {
 
   // if (_alpha.find(l.v) == _alpha.end()) {
   //   if (DEBUG_EMOA > 2) {
@@ -262,12 +262,12 @@ void BOA::_UpdateFrontier(Label l) {
   _alpha[l.v]->Update(l);
 
   // debug info below
-  if (DEBUG_BOA > 0) {
+  if (DEBUG_BOALEX > 0) {
     std::cout << "[DEBUG] ----->> UpdateF. tree(" << l.v << ") : " << std::endl;
     // ptr->_tree.Print() ;
     // _alpha[l.v].Print();
   }
-  if (DEBUG_BOA > 1) {
+  if (DEBUG_BOALEX > 1) {
     std::cout << "[DEBUG] ----->> UpdateF. label ids = {";
     for (auto i : _alpha[l.v]->label_ids) {
       std::cout << i << ",";
@@ -344,9 +344,9 @@ basic::AVLNode* Frontier::_rebuildTreeMethod(std::vector<long> &tree_node_ids, l
   if (DEBUG_AVLTREE) {_verifyTree(n);}
   return n;
 };*/
-  Frontier_BOA::Frontier_BOA(){};
+  Frontier_BOALEX::Frontier_BOALEX(){};
 
-  Frontier_BOA::~Frontier_BOA(){};
+  Frontier_BOALEX::~Frontier_BOALEX(){};
 
 //Naive version 
 //  bool Frontier_BOA::Check(CostVec g){
@@ -376,7 +376,7 @@ basic::AVLNode* Frontier::_rebuildTreeMethod(std::vector<long> &tree_node_ids, l
 // };
 
 //If it faster than Naive, then it can called optimized version
-bool Frontier_BOA::Check(CostVec g){
+bool Frontier_BOALEX::Check(CostVec g){
    for (auto k : labels){
     if (EpsDom(k.g,g)) {
       return true;
@@ -384,7 +384,7 @@ bool Frontier_BOA::Check(CostVec g){
    }
   return false;
 };
-void Frontier_BOA::Update(Label l){
+void Frontier_BOALEX::Update(Label l){
     if (labels.empty()){
       label_ids.push_back(l.id);
       labels.push_back(l);
@@ -479,7 +479,7 @@ void Frontier::Update(Label l) {
   return;
 };
 */
-CostVec Frontier_BOA::_p(CostVec v) {
+CostVec Frontier_BOALEX::_p(CostVec v) {
   CostVec out;
   for (size_t i = 1; i < v.size(); i++){
     out.push_back(v[i]);
@@ -492,7 +492,7 @@ CostVec Frontier_BOA::_p(CostVec v) {
 /**
  *
  */
-void GraphExpandCostDim_BOA(rzq::basic::SparseGraph* g, bool add_deg_cost, bool add_len_cost) {
+void GraphExpandCostDim_BOALEX(rzq::basic::SparseGraph* g, bool add_deg_cost, bool add_len_cost) {
   if (add_deg_cost){
     int cdim = g->CostDim();
     g->ChangeCostDim(cdim+1);
@@ -536,20 +536,20 @@ void GraphExpandCostDim_BOA(rzq::basic::SparseGraph* g, bool add_deg_cost, bool 
   }
 };
 
-int RunBOA(rzq::basic::PlannerGraph* g, long vo, long vd, double time_limit, rzq::search::BOAResult* res)
+int RunBOALEX(rzq::basic::PlannerGraph* g, long vo, long vd, double time_limit, rzq::search::BOALEXResult* res)
 {
   size_t cdim = g->CostDim();
-  std::cout << "[INFO] RunBOA, M=" << cdim << " time_limit = " << time_limit << std::endl;
+  std::cout << "[INFO] RunBOALEX, M=" << cdim << " time_limit = " << time_limit << std::endl;
   int ret_flag = 0;
 
   // The following if-else is actually minor. Just use BOAKd for all cases is totally fine...
-  auto planner = rzq::search::BOA();
+  auto planner = rzq::search::BOALEX();
   planner.SetGraphPtr(g) ; // set graph to the planner
   planner.InitHeu(vd); // this vd must be the same as the vd in Search().
   ret_flag = planner.Search(vo, vd, time_limit) ;
   *res = planner.GetResult(); // get result
 
-  std::cout << "[INFO] RunBOA, exit with flag " << ret_flag << " with " << res->paths.size() 
+  std::cout << "[INFO] RunBOALEX, exit with flag " << ret_flag << " with " << res->paths.size() 
             << " solutions in " << res->rt_initHeu << "(for heu) + " << res->rt_search << "(for search) seconds." 
             << std::endl;
 
@@ -557,7 +557,7 @@ int RunBOA(rzq::basic::PlannerGraph* g, long vo, long vd, double time_limit, rzq
 };
 
 
-int SaveBOAResult(std::string fname, const search::BOAResult& res) {
+int SaveBOALEXResult(std::string fname, const search::BOALEXResult& res) {
   std::ofstream fout;
 
   fout.open(fname);
@@ -566,7 +566,7 @@ int SaveBOAResult(std::string fname, const search::BOAResult& res) {
     return -1;
   }
 
-  fout << "BOAResults: " << std::endl;
+  fout << "BOALEX_Results: " << std::endl;
   fout << "n_generated: " << res.n_generated << std::endl;
   fout << "n_expanded: " << res.n_expanded << std::endl;
   fout << "n_domCheck: " << res.n_domCheck << std::endl;
