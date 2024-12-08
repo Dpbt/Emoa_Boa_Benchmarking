@@ -2,20 +2,18 @@
 About: python helper APIs
 Author: Zhongqiang (Richard) Ren and Denis Derkach
 """
-
-from sys import stdout
+import random
 import numpy as np
-import sys
 import subprocess
 import pandas as pd
-from IPython.display import Image as Img, display
-from ipywidgets import IntProgress
 from tqdm import tqdm
 from joblib import Parallel, delayed
 import time
 
+from Our_code.NY_tests_generator import ny_tests_generator
 
-def getResult(res_file):
+
+def getResult(res_file: str):
     """
     """
     res_dict = dict()
@@ -60,70 +58,28 @@ def getResult(res_file):
     return res_dict
 
 
-def runEMOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
+def run_algorithm(cg_list: list, exe_path: str, res_path: str, vo: int, vd: int, tlimit: int):
     """
     """
-    # print("[INFO] runEMOA (python) vo =", vo, ", vd =", vd, ", tlimit =", tlimit, ", M =", len(cg_list))
-
-    cmd = [exe_path, str(vo), str(vd), str(tlimit), str(len(cg_list))] + cg_list
+    cmd = [str(vo), str(vd), str(tlimit), str(len(cg_list))] + cg_list
     cmd.append(res_path)
 
-    cmd_s = ' '.join(cmd[1:])
-
-    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
-    #        "-c",
-    #        "cd /c/Users/denis/CLionProjects/public_emoa_git/cmake-build-debug && ./run_emoa.exe " + cmd_s]
-
-    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
-    #        "-c",
-    #        "../cmake-build-debug/run_emoa.exe " + cmd_s]
+    cmd_s = ' '.join(cmd)
 
     cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
            "-c",
-           "C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/run_emoa.exe " + cmd_s]
+           f"C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/{exe_path} " + cmd_s]
 
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-
     process.wait()
-    # print("[INFO] runEMOA (python) invoke c++ bin finished..." )
-
-    out = getResult(res_path)
-
-    return out
-
-def runBOA(cg_list, data_folder, exe_path, res_path, vo, vd, tlimit):
-    """
-    """
-    cmd = [exe_path, str(vo), str(vd), str(tlimit), str(len(cg_list))] + cg_list
-    cmd.append(res_path)
-
-    cmd_s = ' '.join(cmd[1:])
-
-    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
-    #        "-c",
-    #        "cd /c/Users/denis/CLionProjects/public_emoa_git/cmake-build-debug && ./run_emoa.exe " + cmd_s]
-
-    # cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
-    #        "-c",
-    #        "../cmake-build-debug/run_emoa.exe " + cmd_s]
-
-    cmd = ["C:\\Program Files\\Git\\bin\\bash.exe",
-           "-c",
-           "C:/Users/denis/CLionProjects/Emoa_heu/cmake-build-debug/run_boalex.exe " + cmd_s]
-
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-
-    process.wait()
-    # print("[INFO] runEMOA (python) invoke c++ bin finished..." )
-
     out = getResult(res_path)
 
     return out
 
 
-def test_emoa(tests: list, display_progress: bool = False):
+def test_system(tests: list, display_progress: bool = False):
     exp_num = 0
-    test_results = pd.DataFrame(columns=['algorithm', 'map_name', 'num_dims', 'time_limit',
+    test_results = pd.DataFrame(columns=['test_number', 'algorithm', 'map_name', 'num_dims', 'time_limit',
                                          'start', 'goal', 'n_generated', 'n_expanded',
                                          'heuristic_time', 'search_time', 'timeout', 'num_nondom_labels_max',
                                          'num_nondom_labels_avg', 'num_solutions',
@@ -137,28 +93,24 @@ def test_emoa(tests: list, display_progress: bool = False):
     for test in iterator:
         exp_num += 1
 
-        algorithm, map_name, time_limit, start, goal, result_file, maps = test
+        test_number, algorithm, map_name, time_limit, start, goal, result_file, maps = test
 
         if algorithm == "emoa":
-            out = runEMOA(cg_list=maps,
-                          data_folder="../data/",
-                          exe_path="../cmake-build-debug/run_emoa.exe",
-                          res_path=result_file,
-                          vo=start,
-                          vd=goal,
-                          tlimit=time_limit)
+            exe_path = "run_emoa.exe"
         elif algorithm == "boa":
-            out = runBOA(cg_list=maps,
-                          data_folder="../data/",
-                          exe_path="../cmake-build-debug/run_boalex.exe",
-                          res_path=result_file,
-                          vo=start,
-                          vd=goal,
-                          tlimit=time_limit)
+            exe_path = "run_boalex.exe"
         else:
-            print("Error: no such algorithm")
+            raise ValueError("Error: no such algorithm")
 
-        new_row = {'algorithm': algorithm,
+        out = run_algorithm(cg_list=maps,
+                            exe_path=exe_path,
+                            res_path=result_file,
+                            vo=start,
+                            vd=goal,
+                            tlimit=time_limit)
+
+        new_row = {'test_number': test_number,
+                   'algorithm': algorithm,
                    'map_name': map_name,
                    'num_dims': len(maps),
                    'time_limit': time_limit,
@@ -181,11 +133,13 @@ def test_emoa(tests: list, display_progress: bool = False):
 
 def parallel_run(tests: list, batch_size: int = 1, n_jobs: int = 1, display_progress: bool = False):
 
+    random.shuffle(tests)
+
     num_batch = int(len(tests)/batch_size) if len(tests) % batch_size == 0 else int(len(tests)/batch_size) + 1
     tests_with_batch = [tests[i * batch_size : (i + 1) * batch_size] for i in range(num_batch)]
 
-    with Parallel(n_jobs=n_jobs, verbose=10, backend='threading') as parallel:
-        results = parallel(delayed(test_emoa)(test_batch, display_progress=display_progress) for test_batch in tests_with_batch)
+    with Parallel(n_jobs=n_jobs, verbose=11, backend='threading') as parallel:
+        results = parallel(delayed(test_system)(test_batch, display_progress=display_progress) for test_batch in tests_with_batch)
 
     test_results = pd.concat(results, ignore_index=True)
 
@@ -194,34 +148,28 @@ def parallel_run(tests: list, batch_size: int = 1, n_jobs: int = 1, display_prog
 
 
 if __name__ == "__main__":
+    random.seed(20)
     pd.set_option('display.max_columns', None)
 
-    tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
-               ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-             ["emoa", "NY", 600, 2, 6000, "../data_out/NY-result.txt",
-               ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-             ["emoa", "NY", 600, 1, 3000, "../data_out/NY-result.txt",
-               ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-             ["emoa", "NY", 600, 100, 6500, "../data_out/NY-result.txt",
-               ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-             ["emoa", "NY", 600, 4, 5500, "../data_out/NY-result.txt",
-               ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],]
+    # tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+    #          ["emoa", "NY", 600, 2, 6000, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+    #          ["emoa", "NY", 600, 1, 3000, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+    #          ["emoa", "NY", 600, 100, 6500, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+    #          ["emoa", "NY", 600, 4, 5500, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],]
+    #
+    # tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
+    #          ["boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
+    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
 
-    tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
-              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-             ["boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
-              ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
-
-    start_time = time.time()
+    tests = ny_tests_generator(num_tests=20)
 
     test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
-
-    end_time = time.time()
-
-    print()
-    print("Runtime:", end_time - start_time)
-
-    test_results.to_csv('../data_out/NY_test_results.csv', index=False)
-
+    test_results.to_csv('../data_out/NY_test_results_1.csv', index=False)
     print(test_results)
 
