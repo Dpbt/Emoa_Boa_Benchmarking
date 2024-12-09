@@ -1,5 +1,5 @@
 import random
-from python.our_generator import grid_generator
+from python.map_generator import grid_generator
 
 def ny_tests_generator(num_tests: int = 50,
                        left_vertex_boundary: int = 1,

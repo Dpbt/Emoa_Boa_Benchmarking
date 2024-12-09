@@ -1,15 +1,8 @@
-# Enhanced Multi-Objective A* (EMOA*)
+# Benchmarking of EMOA\* and ext-BOA\*-lex algorithms
 
-This work addresses a Multi-Objective Shortest Path Problem (MO-SPP) on a graph where the goal is to find a set of Pareto-optimal solutions from a start node to a destination in the graph. This repo provides a C++ implementation of Enhanced Multi-Objective A\* (EMOA\*) Algorithm, which is guaranteed to find all cost-unique Pareto-optimal solutions and runs faster than existing techniques by up to an order of magnitude. More technical details can be found in [[1](https://arxiv.org/pdf/2202.08992.pdf)].
+In this project, we make a detailed comparison of two algorithms that solve the multi-objective shortest path problem (MO-SPP) on a graph, whose goal is to find a set of Pareto-optimal solutions from the initial vertex to the final vertex in the graph. This repository presents a C++ implementation of the Enhanced Multi-Objective A\* algorithm (EMOA\*) and the Extended Bi-Objective Search Algorithm (ext-BOA\*-lex), as well as their benchmarking and the code used for it. More technical information about the algorithms can be found in [[1](https://arxiv.org/pdf/2202.08992.pdf)].
 
-The code is distributed for academic and non-commercial use.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The original implementation of the EMOA algorithm\* was obtained from the [repository](https://github.com/rap-lab-org/public_emoa) of the authors of the original paper
 
 <img src="https://github.com/wonderren/wonderren.github.io/blob/master/images/fig_emoa_NY17.png" alt="" align="middle" hspace="20" style=" border: #FFFFFF 2px none;">
 
@@ -22,10 +15,21 @@ SOFTWARE.
 ## Project Structure
 
 * `README.md` - This file
-* `source/` - Contains the path planning source code
+* `data/` - Map (New-York road map, generated maps and example map) files
+* `dataout/` - Tables containing benchmarking results, generated plots and some technical files
+* `source/` - Contains the path planning source code 
 * `test/` - Contains example code for path planning algorithms
 * `include/` - Contains header files
-* `data/` - Contains sample graph files and sample result files
+* `python/` - Our python api for benchmarking algorithms, plots, maps and tests generators
+
+## Our work
+
+* The code of the ext-BOA\*-lex algorithm implemented in C++ (`source/search_boalex.cpp` and `test/run_boalex.cpp` files)
+* A parallel test system that runs tests for both algorithms (`python/emoa_py_py_parallel_api.py` file)
+* A map generator of a given size, dimensionality, with the ability to add random walls (`python/map_generator.py` file)
+* Third metric generator for New York's expensive maps (`python/3_dimension_generator_for_ny_map.py` file)
+* Test list generator based on our map generators (`python/tests_generator.py` file)
+* Code that generates plots showing our results (`python/plots_generator.py` file)
 
 ## Instructions:
 
@@ -42,10 +46,12 @@ SOFTWARE.
 ### Command-Line Interface (CLI)
 
 * Run example via command-line interface (CLI)
-  * `./run_emoa 1 5 60 3 ../data/ex1-c1.gr ../data/ex1-c2.gr ../data/ex1-c3.gr ../data/result.txt`
+  * `./run_emoa 1 5 60 3 ../data/ex1-c1.gr ../data/ex1-c2.gr ../data/ex1-c3.gr ../data/result.txt` or
+  * `./run_boalex 1 5 60 3 ../data/ex1-c1.gr ../data/ex1-c2.gr ../data/ex1-c3.gr ../data/result.txt`
   * Runs EMOA\* on 3-cost graph (edge weights detailed in `../data/ex1-c1.gr`, `../data/ex1-c2.gr`, `../data/ex1-c3.gr`) to find solutions from node 1 to node 5 with a 60 second time limit, and saves results into `data/result.txt`
 * General usage of the command-line interface
   * `./run_emoa (arg1 v_start) (arg2 v_dest) (arg3 time_limit) (arg4 M) (arg5 graph1_path) (arg6 graph2_path) ... ((arg(M+4) graphM_path)) (arg(M+5) result_path)`
+  * `./run_boalex (arg1 v_start) (arg2 v_dest) (arg3 time_limit) (arg4 M) (arg5 graph1_path) (arg6 graph2_path) ... ((arg(M+4) graphM_path)) (arg(M+5) result_path)`
   * arg1 v_start = the starting node
   * arg2 v_dest = the destination node
   * arg3 time_limit = the time limit for EMOA\*
@@ -56,8 +62,9 @@ SOFTWARE.
 
 ### Preliminary Python API
 
-* We have also developed a simple Python wrapper based on the aforementioned CLI (by writing and reading files and call the CLI), which can be found in python/emoa_py_api.py
-* Run `cd python/` and then run `python3 emoa_py_api.py`, a toy example using the python wrapper can be executed.
+* We have also developed a Python wrapper based on the aforementioned CLI (by writing and reading files and call the CLI), which can be found in `python/emoa_py_py_parallel_api.py`
+* The main function in the API is `parallel_run`, which takes as input the list of tests, the size of batches for each process and the number of processes to parallelize testing and returns a pandas DataFrame, containing results for all tests in the list
+* each test in the list must be presented in the following format: [experiment number, algorithm name (“boa” or “emoa”), map name, timelimit, start vertex, end vertex, file path to record the results of the experiment (.txt, intermediate file), [list of paths to map files]].
 * The current Python wrapper is only applicable to grid-like map. For general usage, please use the CLI.
 * More APIs may be developed in the future.
 
@@ -102,6 +109,9 @@ Each of the N solutions are then listed in sets of three lines:
 * [1] Enhanced Multi-Objective A* Using Balanced Binary Search Trees.\
   Zhongqiang Ren, Richard Zhan, Sivakumar Rathinam, Maxim Likhachev and Howie Choset.\
   [[Bibtex](https://wonderren.github.io/files/bibtex_ren22emoa.txt)][[Paper](https://wonderren.github.io/files/ren22_emoa_socs.pdf)]
+* [2] A Simple and Fast Bi-Objective Search Algorithm.\
+  Carlos Hernandez Ulloa, William Yeoh, Jorge A. Baier, Han Zhang, Luis Suazo, Sven Koenig.\
+  [[Paper](https://icaps20.icaps-conference.org/paper199.html)]
 
 ### Development Team
 
