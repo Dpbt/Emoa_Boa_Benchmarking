@@ -11,7 +11,7 @@ from joblib import Parallel, delayed
 from itertools import product
 import time
 
-from Our_code.tests_generator import ny_tests_generator, simple_map_tests_generator
+from our_code.tests_generator import ny_tests_generator, simple_map_tests_generator
 
 
 def getResult(res_file: str):
@@ -83,8 +83,7 @@ def test_system(tests: list, display_progress: bool = False):
     test_results = pd.DataFrame(columns=['test_number', 'algorithm', 'map_name', 'num_dims', 'time_limit',
                                          'start', 'goal', 'n_generated', 'n_expanded',
                                          'heuristic_time', 'search_time', 'timeout', 'num_nondom_labels_max',
-                                         'num_nondom_labels_avg', 'num_solutions',
-                                         'solutions_labels'])
+                                         'num_nondom_labels_avg', 'num_solutions'])
 
     if display_progress:
         iterator = tqdm(tests, desc="Выполнение тестов")
@@ -124,8 +123,7 @@ def test_system(tests: list, display_progress: bool = False):
                    'timeout': out["timeout"],
                    'num_nondom_labels_max': out["num_nondom_labels_max"],
                    'num_nondom_labels_avg': out["num_nondom_labels_avg"],
-                   'num_solutions': out["num_solutions"],
-                   'solutions_labels': out["paths"].keys()}
+                   'num_solutions': out["num_solutions"]}
 
         test_results = pd.concat([test_results, pd.DataFrame([new_row])], ignore_index=True)
 

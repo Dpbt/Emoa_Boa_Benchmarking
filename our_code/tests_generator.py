@@ -1,5 +1,5 @@
 import random
-from Our_code.our_generator import grid_generator
+from our_code.our_generator import grid_generator
 
 def ny_tests_generator(num_tests: int = 50,
                        left_vertex_boundary: int = 1,
