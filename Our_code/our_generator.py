@@ -111,7 +111,7 @@ def grid_generator(width: int = 10,
 
 if __name__ == "__main__":
 
-    lis, map = grid_generator(4, 4, 3, walls=True, walls_ratio=0.2, map_name="../data/example_map")
+    lis, map = grid_generator(15, 15, 3, walls=True, walls_ratio=0.2, map_name="../generated_maps/example_map")
 
     # print(*lis, sep='\n')
     print_matrix_as_cards(map)

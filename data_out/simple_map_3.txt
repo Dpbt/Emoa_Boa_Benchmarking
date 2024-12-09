@@ -1,0 +1,10 @@
+EMOAResults: 
+n_generated: 2
+n_expanded: 2
+n_domCheck: 0
+rt_initHeu: 0
+rt_search: 0
+timeout: 0
+num_nondom_labels_max: -1
+num_nondom_labels_avg: -1
+N: 0

@@ -8,9 +8,10 @@ import subprocess
 import pandas as pd
 from tqdm import tqdm
 from joblib import Parallel, delayed
+from itertools import product
 import time
 
-from Our_code.NY_tests_generator import ny_tests_generator
+from Our_code.tests_generator import ny_tests_generator, simple_map_tests_generator
 
 
 def getResult(res_file: str):
@@ -149,6 +150,7 @@ def parallel_run(tests: list, batch_size: int = 1, n_jobs: int = 1, display_prog
 
 if __name__ == "__main__":
     random.seed(20)
+    np.random.seed(20)
     pd.set_option('display.max_columns', None)
 
     # tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
@@ -167,9 +169,32 @@ if __name__ == "__main__":
     #          [1, "boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
     #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
 
-    tests = ny_tests_generator(num_tests=50)
+    # NY tests
+    # tests = ny_tests_generator(num_tests=50)
+    #
+    # test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
+    # test_results.to_csv('../data_out/NY_test_results.csv', index=False)
+    # print(test_results)
 
-    test_results = parallel_run(tests[80:100], batch_size=1, n_jobs=5, display_progress=False)
-    test_results.to_csv('../data_out/NY_test_results_3.csv', index=False)
-    print(test_results)
+    # Simple maps tests
+    tests_params = list(product([3, 4, 5], [0.0, 0.2, 0.4]))
+    tests_params = list(product([5], [0.0]))
+    for num_dims, walls_ratio in tests_params:
+        tests = simple_map_tests_generator(num_tests=50,
+                                         start=1,
+                                         finish=169,
+                                         width=13,
+                                         height=13,
+                                         num_dims=num_dims,
+                                         walls=False,
+                                         walls_ratio=walls_ratio,
+                                         map_name="simple_map",
+                                         time_limit=600)
+
+        test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
+        test_results.to_csv(f'../data_out/simple_map_{num_dims}_results/simple_map_{num_dims}_{int(walls_ratio * 100)}.csv', index=False)
+        print(test_results)
+
+
+
 
