@@ -105,6 +105,6 @@ Each of the N solutions are then listed in sets of three lines:
 
 ### Development Team
 
-Contributors: [Zhongqiang (Richard) Ren](https://wonderren.github.io/), Richard Zhan.
+Contributors: [Denis Derkach](https://github.com/Dpbt), [Denis Kolesnikov](https://github.com/Hexpth).
 
-Advisors: Prof. Sivakumar Rathinam (TAMU), Prof. Maxim Likhachev (CMU), Prof. Howie Choset (CMU).
+Advisors: Konstantin Yakovlev (SPBU).
