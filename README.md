@@ -25,7 +25,7 @@ The original implementation of the EMOA algorithm\* was obtained from the [repos
 ## Our work
 
 * The code of the ext-BOA\*-lex algorithm implemented in C++ (`source/search_boalex.cpp` and `test/run_boalex.cpp` files)
-* A parallel test system that runs tests for both algorithms (`python/emoa_py_parallel_api.py` file)
+* A parallel test system that runs tests for both algorithms (`python/py_parallel_api.py` file)
 * A map generator of a given size, dimensionality, with the ability to add random walls (`python/map_generator.py` file)
 * Third metric generator for New York's expensive maps (`python/3_dimension_generator_for_ny_map.py` file)
 * Test list generator based on our map generators (`python/tests_generator.py` file)
@@ -62,7 +62,7 @@ The original implementation of the EMOA algorithm\* was obtained from the [repos
 
 ### Preliminary Python API
 
-* We have also developed a Python wrapper based on the aforementioned CLI (by writing and reading files and call the CLI), which can be found in `python/emoa_py_parallel_api.py`
+* We have also developed a Python wrapper based on the aforementioned CLI (by writing and reading files and call the CLI), which can be found in `python/py_parallel_api.py`
 * The main function in the API is `parallel_run`, which takes as input the list of tests, the size of batches for each process and the number of processes to parallelize testing and returns a pandas DataFrame, containing results for all tests in the list
 * each test in the list must be presented in the following format: [experiment number, algorithm name (“boa” or “emoa”), map name, timelimit, start vertex, end vertex, file path to record the results of the experiment (.txt, intermediate file), [list of paths to map files]].
 * The current Python wrapper is only applicable to grid-like map. For general usage, please use the CLI.
