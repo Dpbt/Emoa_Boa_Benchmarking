@@ -1,8 +1,8 @@
 # Benchmarking of EMOA\* and ext-BOA\*-lex algorithms
 
-In this project, we make a detailed comparison of two algorithms that solve the multi-objective shortest path problem (MO-SPP) on a graph, whose goal is to find a set of Pareto-optimal solutions from the initial vertex to the final vertex in the graph. This repository presents a C++ implementation of the Enhanced Multi-Objective A\* algorithm (EMOA\*) and the Extended Bi-Objective Search Algorithm (ext-BOA\*-lex), as well as their benchmarking and the code used for it. More technical information about the algorithms can be found in [[1](https://arxiv.org/pdf/2202.08992.pdf)].
+In this project, we make a detailed comparison of two algorithms that solve the multi-objective shortest path problem (MO-SPP) on a graph where the goal is to find a set of Pareto-optimal solutions from the initial vertex to the final vertex in the graph. This repository contains a C++ implementation of the Enhanced Multi-Objective A\* algorithm (EMOA\*) and the Extended Bi-Objective Search Algorithm (ext-BOA\*-lex), as well as their benchmarking and the code used for it. More technical information about the algorithms can be found in [[1](https://arxiv.org/pdf/2202.08992.pdf)] and [[2](https://icaps20.icaps-conference.org/paper199.html)].
 
-The original implementation of the EMOA algorithm\* was obtained from the [repository](https://github.com/rap-lab-org/public_emoa) of the authors of the original paper
+The original implementation of the EMOA algorithm\* was obtained from the [repository](https://github.com/rap-lab-org/public_emoa) of the authors of the original paper.
 
 <img src="https://github.com/wonderren/wonderren.github.io/blob/master/images/fig_emoa_NY17.png" alt="" align="middle" hspace="20" style=" border: #FFFFFF 2px none;">
 
