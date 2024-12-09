@@ -41,8 +41,6 @@ def simple_map_tests_generator(num_tests: int = 50,
 
     for exp_number in range(1, num_tests + 1):
 
-        # print(f"../generated_maps/{num_dims}_dims_{walls_percent}_ratio/{map_name}_{num_dims}_{width}_{height}_{walls_percent}")
-
         _, _ = grid_generator(width=width,
                               height=height,
                               num_dims=num_dims,

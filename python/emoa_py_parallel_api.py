@@ -151,22 +151,6 @@ if __name__ == "__main__":
     np.random.seed(20)
     pd.set_option('display.max_columns', None)
 
-    # tests = [["emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-    #          ["emoa", "NY", 600, 2, 6000, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-    #          ["emoa", "NY", 600, 1, 3000, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-    #          ["emoa", "NY", 600, 100, 6500, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-    #          ["emoa", "NY", 600, 4, 5500, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],]
-    #
-    # tests = [[1, "emoa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]],
-    #          [1, "boa", "NY", 600, 1, 5000, "../data_out/NY-result.txt",
-    #           ["../data/USA-road-d.NY.gr", "../data/USA-road-t.NY.gr", "../data/USA-road-deg.NY.gr"]]]
-
     # NY tests
     # tests = ny_tests_generator(num_tests=50)
     #
@@ -177,6 +161,7 @@ if __name__ == "__main__":
     # Simple maps tests
     tests_params = list(product([3, 4, 5], [0.0, 0.2, 0.4]))
     tests_params = list(product([5], [0.0]))
+    tests_params = list(product([3, 4], [0.1]))
     for num_dims, walls_ratio in tests_params:
         tests = simple_map_tests_generator(num_tests=50,
                                          start=1,
@@ -184,13 +169,13 @@ if __name__ == "__main__":
                                          width=13,
                                          height=13,
                                          num_dims=num_dims,
-                                         walls=False,
+                                         walls=True if walls_ratio > 0 else False,
                                          walls_ratio=walls_ratio,
                                          map_name="simple_map",
                                          time_limit=600)
 
-        test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
-        test_results.to_csv(f'../data_out/simple_map_{num_dims}_results/simple_map_{num_dims}_{int(walls_ratio * 100)}.csv', index=False)
+        test_results = parallel_run(tests, batch_size=1, n_jobs=1, display_progress=False)
+        test_results.to_csv(f'../data_out/simple_map_{num_dims}_results/simple_map_{num_dims}_{int(walls_ratio * 100)}_wout_labels.csv', index=False)
         print(test_results)
 
 
