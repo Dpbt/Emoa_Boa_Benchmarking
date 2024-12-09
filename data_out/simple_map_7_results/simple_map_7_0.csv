@@ -1,0 +1,5 @@
+test_number,algorithm,map_name,num_dims,heuristic_time,search_time,num_solutions,time_limit,start,goal,n_generated,n_expanded,timeout,num_nondom_labels_max,num_nondom_labels_avg
+1,boa,simple map 7 dims,7,0.0,0.0,6,600,1,9,21,13,0,-1.0,-1.0
+1,emoa,simple map 7 dims,7,0.0,0.0,6,600,1,9,21,13,0,-1.0,-1.0
+2,boa,simple map 7 dims,7,0.0,0.0,6,600,1,9,22,13,0,-1.0,-1.0
+2,emoa,simple map 7 dims,7,0.0,0.0,6,600,1,9,22,13,0,-1.0,-1.0

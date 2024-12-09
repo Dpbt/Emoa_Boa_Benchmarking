@@ -2,7 +2,7 @@ import pandas as pd
 
 
 if __name__ == "__main__":
-    num = 4
+    num = 5
     walls = 10
     df = pd.read_csv(f'../data_out/simple_map_{num}_results/simple_map_{num}_{walls}_wout_labels.csv')
     # df2 = pd.read_csv('../data_out/NY_test_results_2.csv')

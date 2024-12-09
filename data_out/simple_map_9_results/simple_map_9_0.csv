@@ -1,0 +1,5 @@
+test_number,algorithm,map_name,num_dims,heuristic_time,search_time,num_solutions,time_limit,start,goal,n_generated,n_expanded,timeout,num_nondom_labels_max,num_nondom_labels_avg
+1,boa,simple map 9 dims,9,0.0,16.112,2523,600,1,64,10991,7916,0,-1.0,-1.0
+1,emoa,simple map 9 dims,9,0.0,1.524,2523,600,1,64,10991,7916,0,-1.0,-1.0
+2,boa,simple map 9 dims,9,0.0,4.994,1339,600,1,64,6663,5080,0,-1.0,-1.0
+2,emoa,simple map 9 dims,9,0.0,0.494,1339,600,1,64,6663,5080,0,-1.0,-1.0
