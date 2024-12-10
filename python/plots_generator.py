@@ -101,8 +101,8 @@ def plot_search_time_vs_solutions(min_dim: int = 3, max_dim: int = 10, walls_per
 
 if __name__ == "__main__":
     # NY successful runs table
-    # comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_wout_labels.csv",
-    #                                       output_file="../data_out/NY_results/NY_successful_runs_table.csv",
-    #                                       num_tests=50)
+    comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_final.csv",
+                                          output_file="../data_out/NY_results/NY_successful_runs_table.csv",
+                                          num_tests=100)
 
-    plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))
+    # plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))

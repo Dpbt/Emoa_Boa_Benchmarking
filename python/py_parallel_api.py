@@ -153,11 +153,12 @@ if __name__ == "__main__":
     pd.set_option('display.max_columns', None)
 
     # NY tests
-    # tests = ny_tests_generator(num_tests=50)
-    # test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
-    # test_results = test_results.sort_values(by=['test_number', 'algorithm'])
-    # test_results.to_csv('../data_out/NY_results/NY_test_results.csv', index=False)
-    # print(test_results)
+    tests = ny_tests_generator(num_tests=100)
+    tests = tests[150:200]
+    test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
+    test_results = test_results.sort_values(by=['test_number', 'algorithm'])
+    test_results.to_csv('../data_out/NY_results/NY_test_results_2_2.csv', index=False)
+    print(test_results)
 
     # Simple maps tests
     """
@@ -171,39 +172,39 @@ if __name__ == "__main__":
     9: 8 /10 - 2 теста мимо 
     10: 8
     """
-    tests_params = [
-        {"num_dims": 3, "width": 30, "height": 30},
-        {"num_dims": 4, "width": 15, "height": 15},
-        {"num_dims": 5, "width": 12, "height": 12},
-        {"num_dims": 6, "width": 10, "height": 10},
-        {"num_dims": 7, "width": 9, "height": 9},
-        {"num_dims": 8, "width": 9, "height": 9},
-        {"num_dims": 9, "width": 8, "height": 8},
-        {"num_dims": 10, "width": 8, "height": 8},
-    ]
-
-    for test in tests_params:
-        for walls_ratio in [0.0, 0.05, 0.10]:
-            num_dims = test["num_dims"]
-            width = test["width"]
-            height = test["height"]
-            walls_percent = int(walls_ratio * 100)
-
-            tests = simple_map_tests_generator(num_tests=50,
-                                               start=1,
-                                               finish=width * height,
-                                               width=width,
-                                               height=height,
-                                               num_dims=num_dims,
-                                               walls=True if walls_percent > 0 else False,
-                                               walls_ratio=walls_ratio,
-                                               map_name_local="simple_map",
-                                               time_limit=600)
-
-            test_results = parallel_run(tests, batch_size=1, n_jobs=4, display_progress=False)
-            test_results = test_results.sort_values(by=['test_number', 'algorithm'])
-            test_results.to_csv(f'../data_out/simple_map_{num_dims}_results/simple_map_{num_dims}_{walls_percent}.csv', index=False)
-            print(test_results)
+    # tests_params = [
+    #     {"num_dims": 3, "width": 30, "height": 30},
+    #     {"num_dims": 4, "width": 15, "height": 15},
+    #     {"num_dims": 5, "width": 12, "height": 12},
+    #     {"num_dims": 6, "width": 10, "height": 10},
+    #     {"num_dims": 7, "width": 9, "height": 9},
+    #     {"num_dims": 8, "width": 9, "height": 9},
+    #     {"num_dims": 9, "width": 8, "height": 8},
+    #     {"num_dims": 10, "width": 8, "height": 8},
+    # ]
+    #
+    # for test in tests_params:
+    #     for walls_ratio in [0.0, 0.05, 0.10]:
+    #         num_dims = test["num_dims"]
+    #         width = test["width"]
+    #         height = test["height"]
+    #         walls_percent = int(walls_ratio * 100)
+    #
+    #         tests = simple_map_tests_generator(num_tests=50,
+    #                                            start=1,
+    #                                            finish=width * height,
+    #                                            width=width,
+    #                                            height=height,
+    #                                            num_dims=num_dims,
+    #                                            walls=True if walls_percent > 0 else False,
+    #                                            walls_ratio=walls_ratio,
+    #                                            map_name_local="simple_map",
+    #                                            time_limit=600)
+    #
+    #         test_results = parallel_run(tests, batch_size=1, n_jobs=4, display_progress=False)
+    #         test_results = test_results.sort_values(by=['test_number', 'algorithm'])
+    #         test_results.to_csv(f'../data_out/simple_map_{num_dims}_results/simple_map_{num_dims}_{walls_percent}.csv', index=False)
+    #         print(test_results)
 
 
 

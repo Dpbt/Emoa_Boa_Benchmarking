@@ -75,7 +75,7 @@ if __name__ == "__main__":
                                              num_dims=4,
                                              walls=False,
                                              walls_ratio=0.2,
-                                             map_name="simple_map",
+                                             map_name_local="simple_map",
                                              time_limit=600)
     for test in tests_array:
         print(test)

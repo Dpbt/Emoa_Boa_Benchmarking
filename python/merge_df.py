@@ -4,12 +4,12 @@ import pandas as pd
 if __name__ == "__main__":
     num = 5
     walls = 10
-    df = pd.read_csv(f'../data_out/simple_map_{num}_results/simple_map_{num}_{walls}_wout_labels.csv')
-    # df2 = pd.read_csv('../data_out/NY_test_results_2.csv')
-    # df3 = pd.read_csv('../data_out/NY_test_results_3.csv')
+    df1 = pd.read_csv('../data_out/NY_results/NY_test_results_wout_labels.csv')
+    df2 = pd.read_csv('../data_out/NY_results/NY_test_results_2_1.csv')
+    df3 = pd.read_csv('../data_out/NY_results/NY_test_results_2_2.csv')
 
-    # combined_df = pd.concat([df1, df2, df3], ignore_index=True)
+    combined_df = pd.concat([df1, df2, df3], ignore_index=True)
 
-    sorted_df = df.sort_values(by=['test_number', 'algorithm'])
+    sorted_df = combined_df.sort_values(by=['test_number', 'algorithm'])
 
-    sorted_df.to_csv(f'../data_out/simple_map_{num}_results/simple_map_{num}_{walls}_wout_labels.csv', index=False)
+    sorted_df.to_csv('../data_out/NY_results/NY_test_results_final.csv', index=False)
