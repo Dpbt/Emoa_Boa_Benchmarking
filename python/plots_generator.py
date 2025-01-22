@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import glob
 
 def ny_table_generator(input_file: str, output_file: str, num_tests: int = 50):
     test_results = pd.read_csv(input_file)
@@ -94,15 +95,55 @@ def plot_search_time_vs_solutions(min_dim: int = 3, max_dim: int = 10, walls_per
     plt.suptitle('Search Time vs Number of Solutions for Different Dimensions', fontsize=16, y=0.95)
 
     # plt.show()
-    plt.savefig('../data_out/plots/st_num_sol_all_dims.png', dpi=500, bbox_inches='tight')
+    plt.savefig('../data_out/plots_and_tables/st_num_sol_all_dims.png', dpi=500, bbox_inches='tight')
 
 
+def simple_map_table_generator(min_dim: int = 3, max_dim: int = 10, walls_percentage_list: tuple = (0, 5, 10),
+                               output_file: str = "../data_out/plots_and_tables/simple_map_stats_table.csv"):
+    results = []
+
+    for num_dims in range(min_dim, max_dim + 1):
+        for walls_percentage in walls_percentage_list:
+            file_name = f"../data_out/simple_map_{num_dims}_results/simple_map_{num_dims}_{walls_percentage}.csv"
+
+            if os.path.exists(file_name):
+                df = pd.read_csv(file_name)
+                df['num_dims'] = num_dims
+                df['walls_percentage'] = walls_percentage
+
+                grouped = df.groupby(['test_number', 'algorithm'])['search_time'].first().unstack('algorithm')
+                ratio = grouped['boa'] / grouped['emoa']
+
+                stats = {
+                    'num_dims': num_dims,
+                    'walls_percentage': walls_percentage,
+                    'mean_ratio': round(ratio.mean(), 2),
+                    'median_ratio': round(ratio.median(), 2),
+                    # 'std_ratio': round(ratio.std(), 2),
+                    'min_ratio': round(ratio.min(), 2),
+                    'max_ratio': round(ratio.max(), 2),
+                    # 'q1_ratio': round(ratio.quantile(0.25), 2),
+                    # 'q3_ratio': round(ratio.quantile(0.75), 2)
+                }
+
+                results.append(stats)
+
+    final_table = pd.DataFrame(results)
+    final_table = final_table.sort_values(['num_dims', 'walls_percentage'])
+    final_table.to_csv(output_file, index=False)
+
+    return final_table
 
 
 if __name__ == "__main__":
     # NY successful runs table
     # comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_final.csv",
-    #                                       output_file="../data_out/NY_results/NY_successful_runs_table.csv",
+    #                                       output_file="../data_out/plots_and_tables/NY_successful_runs_table.csv",
     #                                       num_tests=100)
 
-    plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))
+    # Plot for simple maps of different dims and walls percentages
+    # plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))
+
+    # Table with some statistics for simple maps of different dims and walls percentages
+    simple_map_table_generator(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10),
+                               output_file = "../data_out/plots_and_tables/simple_map_stats_table.csv")
