@@ -153,12 +153,12 @@ if __name__ == "__main__":
     pd.set_option('display.max_columns', None)
 
     # NY tests
-    tests = ny_tests_generator(num_tests=100)
-    tests = tests[150:200]
-    test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
-    test_results = test_results.sort_values(by=['test_number', 'algorithm'])
-    test_results.to_csv('../data_out/NY_results/NY_test_results_2_2.csv', index=False)
-    print(test_results)
+    # tests = ny_tests_generator(num_tests=100)
+    # tests = tests[150:200]
+    # test_results = parallel_run(tests, batch_size=1, n_jobs=5, display_progress=False)
+    # test_results = test_results.sort_values(by=['test_number', 'algorithm'])
+    # test_results.to_csv('../data_out/NY_results/NY_test_results_2_2.csv', index=False)
+    # print(test_results)
 
     # Simple maps tests
     """
