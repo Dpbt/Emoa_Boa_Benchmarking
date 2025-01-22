@@ -135,6 +135,31 @@ def simple_map_table_generator(min_dim: int = 3, max_dim: int = 10, walls_percen
     return final_table
 
 
+def simple_map_plot_mean_ratio(input_file: str, output_file: str):
+    df = pd.read_csv(input_file)
+
+    plt.style.use('seaborn')
+    fig, ax = plt.subplots(figsize=(10, 6))
+    colors = sns.color_palette("viridis", n_colors=len(df['walls_percentage'].unique()))
+
+    for i, percentage in enumerate(df['walls_percentage'].unique()):
+        data = df[df['walls_percentage'] == percentage]
+        ax.plot(data['num_dims'], data['mean_ratio'],
+            label=f'{percentage}%',
+            marker='o',
+            color=colors[i],
+            linewidth=2.5,
+            alpha=0.7)
+
+    ax.set_xlabel('Map dimension')
+    ax.set_ylabel('Average ratio of BOA runtime to EMOA')
+    ax.set_title('Dependence of average BOA to EMOA runtime ratio on map dimensionality')
+    ax.legend(title='Walls percentage')
+
+    # plt.show()
+    plt.savefig(output_file, dpi=500, bbox_inches='tight')
+
+
 if __name__ == "__main__":
     # NY successful runs table
     # comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_final.csv",
@@ -145,5 +170,9 @@ if __name__ == "__main__":
     # plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))
 
     # Table with some statistics for simple maps of different dims and walls percentages
-    simple_map_table_generator(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10),
-                               output_file = "../data_out/plots_and_tables/simple_map_stats_table.csv")
+    # simple_map_table_generator(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10),
+    #                            output_file = "../data_out/plots_and_tables/simple_map_stats_table.csv")
+
+    # PLot with some statistics for simple maps of different dims and walls percentages
+    simple_map_plot_mean_ratio(input_file = "../data_out/plots_and_tables/simple_map_stats_table.csv",
+                               output_file = "../data_out/plots_and_tables/simple_map_mean_ratio_plot.png")
