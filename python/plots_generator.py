@@ -2,12 +2,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
-import glob
 
-def ny_table_generator(input_file: str, output_file: str, num_tests: int = 50):
+
+def ny_table_generator(input_file: str = "../data_out/NY_results/NY_test_results_final.csv",
+                       output_file: str = "../data_out/plots_and_tables/NY_successful_runs_table.csv"):
     test_results = pd.read_csv(input_file)
     comparison_data = []
     algorithms = ['emoa', 'boa']
+
+    num_tests = test_results['test_number'].nunique()
 
     for algorithm in algorithms:
         algorithm_data = test_results[test_results['algorithm'] == algorithm]
@@ -163,8 +166,7 @@ def simple_map_plot_mean_ratio(input_file: str, output_file: str):
 if __name__ == "__main__":
     # NY successful runs table
     # comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_final.csv",
-    #                                       output_file="../data_out/plots_and_tables/NY_successful_runs_table.csv",
-    #                                       num_tests=100)
+    #                                       output_file="../data_out/plots_and_tables/NY_successful_runs_table.csv")
 
     # Plot for simple maps of different dims and walls percentages
     # plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))
