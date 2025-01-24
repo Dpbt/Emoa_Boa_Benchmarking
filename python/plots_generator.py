@@ -19,15 +19,42 @@ def ny_table_generator(input_file: str = "../data_out/NY_results/NY_test_results
         comparison_data.append({
             'Algorithm': "EMOA*" if algorithm == "emoa" else "ext-BOA*-lex",
             'Successful Runs': str(len(successful_runs)) + "/" + str(num_tests),
-            'Avg Search Time': successful_runs['search_time'].mean(),
-            'Median Search Time': successful_runs['search_time'].median(),
-            'Max Search Time': successful_runs['search_time'].max()
+            'Avg Search Time': round(successful_runs['search_time'].mean(), 2),
+            'Median Search Time': round(successful_runs['search_time'].median(), 2),
+            'Max Search Time': round(successful_runs['search_time'].max(), 2)
         })
 
     comparison_table = pd.DataFrame(comparison_data)
     comparison_table.to_csv(output_file, index=False)
 
     return comparison_table
+
+
+def ny_table_generator_2(input_file, output_file):
+    test_results = pd.read_csv(input_file)
+
+    filtered_results = test_results[test_results['timeout'] == 1]
+    valid_tests = filtered_results.groupby('test_number').filter(lambda x: set(x['algorithm']) == {'emoa', 'boa'})
+    ratios = []
+
+    for test_number in valid_tests['test_number'].unique():
+        emoa_solutions = valid_tests[(valid_tests['test_number'] == test_number) & (valid_tests['algorithm'] == 'emoa')]['num_solutions'].values[0]
+        boa_solutions = valid_tests[(valid_tests['test_number'] == test_number) & (valid_tests['algorithm'] == 'boa')]['num_solutions'].values[0]
+
+        ratio = emoa_solutions / boa_solutions
+        ratios.append({'test_number': test_number, 'solution_ratio': ratio})
+
+    ratios_df = pd.DataFrame(ratios)
+
+    statistics = {
+        'min': round(ratios_df['solution_ratio'].min(), 2),
+        'average': round(ratios_df['solution_ratio'].mean(), 2),
+        'median': round(ratios_df['solution_ratio'].median(), 2),
+        'max': round(ratios_df['solution_ratio'].max(), 2)
+    }
+
+    stats_df = pd.DataFrame(statistics, index=[0])
+    stats_df.to_csv(output_file, index=False)
 
 
 def plot_search_time_vs_solutions(min_dim: int = 3, max_dim: int = 10, walls_percentage_list: tuple = (0, 5, 10)):
@@ -74,14 +101,15 @@ def plot_search_time_vs_solutions(min_dim: int = 3, max_dim: int = 10, walls_per
                                c=colors[(algorithm, walls)], marker=markers[walls],
                                label=f"{algorithm}, {walls}% walls", alpha=0.7, s=15)
 
-        ax.set_title(f'Dimensions: {num_dims}', fontsize=12)
-        ax.set_xlabel('Number of Solutions', fontsize=10)
-        ax.set_ylabel('Search Time', fontsize=10)
+        ax.set_title(f'Dimensions: {num_dims}', fontsize=24)
+        ax.set_xlabel('Number of Solutions', fontsize=24)
+        ax.set_ylabel('Search Time', fontsize=24)
         ax.set_yscale('log')
 
         ax.set_xlim(0, 5000)
         ax.set_xticks([0, 1000, 2000, 3000, 4000, 5000])
         ax.set_xticklabels(['0', '1000', '2000', '3000', '4000', '5000'])
+        ax.tick_params(axis='both', labelsize=14)
 
         ax.grid(True, which="both", ls="-", alpha=0.2)
 
@@ -91,14 +119,14 @@ def plot_search_time_vs_solutions(min_dim: int = 3, max_dim: int = 10, walls_per
     legend_elements = [plt.Line2D([0], [0], marker=markers[walls], color=colors[(alg, walls)],
                                   label=f'{alg}, {walls}% walls', markersize=10, linestyle='None')
                        for alg in ['emoa', 'boa'] for walls in [0, 5, 10]]
-    legend_ax.legend(handles=legend_elements, loc='center', title='Algorithm and Wall Percentage')
+    legend_ax.legend(handles=legend_elements, loc='center', title='Algorithm and Wall Percentage', fontsize=18, title_fontsize=20)
 
     plt.tight_layout()
-    plt.subplots_adjust(left=0.05, right=0.95, bottom=0.15, top=0.85, hspace=0.5, wspace=0.35)
-    plt.suptitle('Search Time vs Number of Solutions for Different Dimensions', fontsize=16, y=0.95)
+    plt.subplots_adjust(left=0.05, right=0.95, bottom=0.15, top=0.85, hspace=0.4, wspace=0.38)
+    plt.suptitle('Search Time vs Number of Solutions for Different Dimensions', fontsize=40, y=0.95)
 
     # plt.show()
-    plt.savefig('../data_out/plots_and_tables/st_num_sol_all_dims.png', dpi=500, bbox_inches='tight')
+    plt.savefig('../data_out/plots_and_tables/st_num_sol_all_dims.png', dpi=400, bbox_inches='tight')
 
 
 def simple_map_table_generator(min_dim: int = 3, max_dim: int = 10, walls_percentage_list: tuple = (0, 5, 10),
@@ -154,19 +182,26 @@ def simple_map_plot_mean_ratio(input_file: str, output_file: str):
             linewidth=2.5,
             alpha=0.7)
 
-    ax.set_xlabel('Map dimension')
-    ax.set_ylabel('Average ratio of BOA runtime to EMOA')
-    ax.set_title('Dependence of average BOA to EMOA runtime ratio on map dimensionality')
-    ax.legend(title='Walls percentage')
+    ax.set_xlabel('Map dimension', fontsize=20)
+    ax.set_ylabel('Average ratio of BOA runtime to EMOA', fontsize=16)
+    ax.set_title('Dependence of average BOA to EMOA runtime ratio on map dimensionality', fontsize=20, pad=20)
+    ax.legend(title='Walls percentage', fontsize=15, title_fontsize='17')
+    ax.tick_params(axis='both', labelsize=16)
 
     # plt.show()
     plt.savefig(output_file, dpi=500, bbox_inches='tight')
 
 
+
 if __name__ == "__main__":
     # NY successful runs table
-    # comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_final.csv",
-    #                                       output_file="../data_out/plots_and_tables/NY_successful_runs_table.csv")
+    comparison_table = ny_table_generator(input_file="../data_out/NY_results/NY_test_results_final.csv",
+                                          output_file="../data_out/plots_and_tables/NY_successful_runs_table.csv")
+
+    # NY table 2
+    # ny_table_generator_2(input_file="../data_out/NY_results/NY_test_results_final.csv",
+    #                      output_file="../data_out/plots_and_tables/NY_table_2.csv")
+
 
     # Plot for simple maps of different dims and walls percentages
     # plot_search_time_vs_solutions(min_dim=3, max_dim=10, walls_percentage_list=(0, 5, 10))
@@ -176,5 +211,7 @@ if __name__ == "__main__":
     #                            output_file = "../data_out/plots_and_tables/simple_map_stats_table.csv")
 
     # PLot with some statistics for simple maps of different dims and walls percentages
-    simple_map_plot_mean_ratio(input_file = "../data_out/plots_and_tables/simple_map_stats_table.csv",
-                               output_file = "../data_out/plots_and_tables/simple_map_mean_ratio_plot.png")
+    # simple_map_plot_mean_ratio(input_file = "../data_out/plots_and_tables/simple_map_stats_table.csv",
+    #                            output_file = "../data_out/plots_and_tables/simple_map_mean_ratio_plot.png")
+
+

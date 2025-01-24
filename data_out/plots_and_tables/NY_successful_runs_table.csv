@@ -1,3 +1,3 @@
 Algorithm,Successful Runs,Avg Search Time,Median Search Time,Max Search Time
-EMOA*,60/100,113.3139,45.783500000000004,541.255
-ext-BOA*-lex,43/100,121.175,52.846,512.16
+EMOA*,60/100,113.31,45.78,541.25
+ext-BOA*-lex,43/100,121.18,52.85,512.16
