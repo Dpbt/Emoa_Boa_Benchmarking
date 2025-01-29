@@ -16,6 +16,7 @@ risk.)
 ## Requirements
 
 * We use CMake (3.16.3) and Make (4.2.1) to compile the code. Lower or higher version may also work.
+* requirements.txt can be used to install python dependencies via conda.
 
 ## Project Structure
 
